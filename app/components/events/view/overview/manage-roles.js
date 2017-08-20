@@ -10,6 +10,13 @@ export default Component.extend({
     },
 
     addUserRole() {
+      const newRole = this.get('store').createRecord('role-invite', {
+        email    : this.get('email'),
+        roleName : this.get('roleName'),
+        event    : this.get('data.event')
+      });
+      this.get('data.roleInvites').addObject(newRole);
+      newRole.save();
       this.set('isAddUserRoleModalOpen', false);
     }
   }

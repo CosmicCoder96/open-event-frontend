@@ -16,22 +16,24 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>John@doe.com</td>
-        <td>xyz</td>
-        <td>
-          <div class="ui horizontal compact basic buttons">
-            {{#ui-popup content=(t 'Edit') class='ui icon button'}}
-              <i class="edit icon"></i>
-            {{/ui-popup}}
-            {{#ui-popup content=(t 'Delete') class='ui icon button'}}
-              <i class="trash outline icon"></i>
-            {{/ui-popup}}
-          </div>
-        </td>
-      </tr>
+      {{#each data.roleInvites as |roleInvite|}}
+        <tr>
+          <td>{{roleInvite.email}}</td>
+          <td>{{roleInvite.roleName}}</td>
+          <td>
+            <div class="ui horizontal compact basic buttons">
+              {{#ui-popup content=(t 'Edit') class='ui icon button'}}
+                <i class="edit icon"></i>
+              {{/ui-popup}}
+              {{#ui-popup content=(t 'Delete') class='ui icon button'}}
+                <i class="trash outline icon"></i>
+              {{/ui-popup}}
+            </div>
+          </td>
+        </tr>
+      {{/each}}
     </tbody>
   </table>
 </div>
 
-{{modals/add-user-role-modal  isOpen=isAddUserRoleModalOpen addUserRole=(action 'addUserRole')}}
+{{modals/add-user-role-modal  roleName=roleName email=email data=data isOpen=isAddUserRoleModalOpen addUserRole=(action 'addUserRole')}}
