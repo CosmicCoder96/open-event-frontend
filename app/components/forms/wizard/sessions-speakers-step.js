@@ -3,10 +3,18 @@ import { computed } from '@ember/object';
 import FormMixin from 'open-event-frontend/mixins/form';
 import EventWizardMixin from 'open-event-frontend/mixins/event-wizard';
 import { groupBy } from 'lodash-es';
+import moment from 'moment';
+import { later } from '@ember/runloop';
 
 export default Component.extend(EventWizardMixin, FormMixin, {
 
   getValidationRules() {
+    window.$.fn.form.settings.rules.checkDates = () => {
+      let startDatetime = moment(this.get('data.speakersCall.startsAt'));
+      let endDatetime = moment(this.get('data.speakersCall.endsAt'));
+      console.log();
+      return (endDatetime.diff(startDatetime, 'minutes') > 0);
+    };
     return {
       inline : true,
       delay  : false,
@@ -45,6 +53,60 @@ export default Component.extend(EventWizardMixin, FormMixin, {
             {
               type   : 'empty',
               prompt : this.l10n.t('Please select the Privacy')
+            }
+          ]
+        },
+        startDate: {
+          identifier : 'start_date',
+          rules      : [
+            {
+              type   : 'empty',
+              prompt : this.l10n.t('Please tell us when your event starts')
+            },
+            {
+              type   : 'checkDates',
+              prompt : this.l10n.t('Start date & time ')
+            }
+          ]
+        },
+        endDate: {
+          identifier : 'end_date',
+          rules      : [
+            {
+              type   : 'empty',
+              prompt : this.l10n.t('Please tell us when your event ends')
+            },
+            {
+              type   : 'checkDates',
+              prompt : this.l10n.t('Start date & time should be after End date and time')
+            }
+          ]
+        },
+        startTime: {
+          identifier : 'start_time',
+          depends    : 'start_date',
+          rules      : [
+            {
+              type   : 'empty',
+              prompt : this.l10n.t('Please give a start time')
+            },
+            {
+              type   : 'checkDates',
+              prompt : '.'
+            }
+          ]
+        },
+        endTime: {
+          identifier : 'end_time',
+          depends    : 'end_date',
+          rules      : [
+            {
+              type   : 'empty',
+              prompt : this.l10n.t('Please give an end time')
+            },
+            {
+              type   : 'checkDates',
+              prompt : '.'
             }
           ]
         }
@@ -113,6 +175,9 @@ export default Component.extend(EventWizardMixin, FormMixin, {
           this.get('data.microlocations').addObject(this.store.createRecord('microlocation'));
           break;
       }
+    },
+    onChange() {
+      this.onValid(() => {});
     }
   }
 });
